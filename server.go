@@ -79,6 +79,7 @@ func handleImages(serv *DripServ) http.HandlerFunc {
 
 func handleStatic(serv *DripServ) http.Handler {
 	mux := http.NewServeMux()
+	mux.Handle("/", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.html", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.js", handleFileRead("index.js", "text/javascript"))
 	mux.Handle("/style.css", handleFileRead("style.css", "text/css"))
