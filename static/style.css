@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#map { height: 100vh; }
+
+.drips_icon {
+    transform: scale(0.1);
+}
+
+.drip_img {
+    opacity: .8;
+    transform: translate(-50%,-50%) scale(.8);
+}
