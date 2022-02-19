@@ -10,6 +10,57 @@
 }
 
 .drip_img {
-    opacity: .8;
+    opacity: .5;
+    transform: translate(-50%,-50%) scale(.2);
+}
+
+#map[data-zoomlevel="8"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.3);
+}
+
+#map[data-zoomlevel="9"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.4);
+}
+
+#map[data-zoomlevel="10"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.5);
+}
+
+#map[data-zoomlevel="11"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.5);
+}
+
+#map[data-zoomlevel="12"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.5);
+}
+
+#map[data-zoomlevel="13"] .drip_img {
+    opacity: .6;
+    transform: translate(-50%,-50%) scale(.7);
+}
+
+#map[data-zoomlevel="14"] .drip_img {
+    opacity: .7;
     transform: translate(-50%,-50%) scale(.8);
+}
+#map[data-zoomlevel="15"] .drip_img {
+    opacity: .8;
+    transform: translate(-50%,-50%) scale(.9);
+}
+#map[data-zoomlevel="16"] .drip_img {
+    opacity: .9;
+    transform: translate(-50%,-50%) scale(1);
+}
+#map[data-zoomlevel="17"] .drip_img {
+    opacity: .9;
+    transform: translate(-50%,-50%) scale(1);
+}
+#map[data-zoomlevel="18"] .drip_img {
+    opacity: .9;
+    transform: translate(-50%,-50%) scale(1);
 }

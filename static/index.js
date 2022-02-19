@@ -1,5 +1,3 @@
-var map
-
 function onReady(f) {
     if (document.readyState == "complete" || document.readyState == "interactive") {
         f()
@@ -15,7 +13,18 @@ async function getData() {
 
 onReady(() => {
 
-    var map = L.map('map').setView([52, 4], 10);
+    const mapContainer = document.getElementById("map");
+    if(!mapContainer) {
+        throw new Error("Map element not found")
+    }
+
+    var map = L.map(mapContainer).setView([52, 4], 10);
+
+    mapContainer.dataset.zoomlevel = map.getZoom()
+
+    map.addEventListener("zoom",(e) => {
+        mapContainer.dataset.zoomlevel = map.getZoom()
+    })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
