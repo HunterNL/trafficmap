@@ -25,6 +25,7 @@ onReady(() => {
 
 
     getData().then(d => {
+        let dripcount = 0;
 
         d.drips.forEach(drip => {
             const lat = parseFloat(drip.lat,10)
@@ -34,7 +35,6 @@ onReady(() => {
                 return
             }
 
-            // const container = document.createElement("div");
             const img = document.createElement("img")
 
             img.src = "./images/"+drip.id+".png"
@@ -45,25 +45,16 @@ onReady(() => {
 
             img.classList.add("drip_img")
 
-            // img.onerror = "e.target.style.display='none'"
-
-            // container.appendChild(img)
 
             const icon = L.divIcon({
                 html: img
             })
 
-            console.log("Added drip",lat,lon)
-
             const marker = L.marker([lat,lon],{icon})
             marker.addTo(map)
+            dripcount++
         })
+
+        console.log("Added",dripcount,"displays to the map")
     })
-
-
-
-    // L.marker([52, 4]).addTo(map)
-    //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    //     .openPopup();
-
 })
