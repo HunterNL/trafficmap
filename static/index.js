@@ -17,8 +17,10 @@ onReady(() => {
     if(!mapContainer) {
         throw new Error("Map element not found")
     }
+    
+    var map = L.map(mapContainer).setView([52.196665, 5.0811767], 9);
 
-    var map = L.map(mapContainer).setView([52, 4], 10);
+    console.log("Leaflet instance:",map)
 
     mapContainer.dataset.zoomlevel = map.getZoom()
 
