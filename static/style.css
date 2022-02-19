@@ -5,6 +5,11 @@
 
 #map { height: 100vh; }
 
+#map .leaflet-div-icon {
+    border: none;
+    background: none;
+}
+
 .drips_icon {
     transform: scale(0.1);
 }
