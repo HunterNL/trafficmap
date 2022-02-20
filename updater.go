@@ -53,9 +53,16 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 		return err
 	}
 
-	drips, err := parseDripsXML(dripsFile, locFile)
+	allDrips, err := parseDripsXML(dripsFile, locFile)
 	if err != nil {
 		return err
+	}
+
+	drips := make([]Drip, 0, len(allDrips))
+	for _, d := range allDrips {
+		if d.hasImage() {
+			drips = append(drips, d)
+		}
 	}
 
 	serv.Lock()

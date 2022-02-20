@@ -82,6 +82,10 @@ func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 			continue // Ignore faulty images
 		}
 
+		if len(img) == 0 {
+			continue // Ignore empty images
+		}
+
 		drips[i].image = img
 	}
 

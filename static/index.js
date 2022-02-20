@@ -51,6 +51,7 @@ onReady(() => {
             img.src = "./images/"+drip.id+".png"
 
             img.addEventListener("error", e => {
+                console.warn("Image not found for display",drip)
                 e.target.parentElement.style.display = "none"
             })
 

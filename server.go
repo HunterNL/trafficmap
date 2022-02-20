@@ -66,7 +66,7 @@ func handleImages(serv *DripServ) http.HandlerFunc {
 		id := strings.TrimSuffix(pathChunks[len(pathChunks)-1], ".png")
 
 		drip, found := serv.dripsMap[id]
-		if !found {
+		if !found || !drip.hasImage() {
 			w.WriteHeader(404)
 			return
 		}

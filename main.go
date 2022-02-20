@@ -34,6 +34,18 @@ type Drip struct {
 	Description string `json:"description"`
 }
 
+func (d *Drip) hasImage() bool {
+	if d.image == nil {
+		return false
+	}
+
+	if len(d.image) == 0 {
+		return false
+	}
+
+	return true
+}
+
 func update(c <-chan time.Time, serv *DripServ) {
 	for range c {
 		fmt.Println("Updating")
