@@ -58,6 +58,8 @@ func main() {
 	sourceUrl := flag.String("sourceURL", "http://opendata.ndw.nu/", "Full URL to retrieve the source data from")
 	downloadOnly := flag.Bool("download", false, "Only download images and quit")
 	outDir := flag.String("outdir", ".", "Output directory for files")
+	host := flag.String("host", "0.0.0.0", "Network addres to use")
+	port := flag.Int("port", 3000, "Port to serve http on")
 
 	flag.Parse()
 
@@ -79,7 +81,7 @@ func main() {
 	go update(*sourceUrl, ticker.C, &serv)
 
 	// placeDripsFile()
-	ServeData(&serv)
+	ServeData(*host, *port, &serv)
 }
 
 // // Ensures a given directory relative to the workig directory exists

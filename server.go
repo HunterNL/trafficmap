@@ -89,13 +89,15 @@ func handleStatic(serv *DripServ) http.Handler {
 	return mux
 }
 
-func ServeData(serv *DripServ) {
+func ServeData(addr string, port int, serv *DripServ) {
 	// http.Handle("/static/", handleStatic(serv))
 
-	addr := "localhost:3000"
+	fullAddr := fmt.Sprintf("%v:%v", addr, port)
 
-	fmt.Printf("Serving data at %v\n", addr)
-	err := http.ListenAndServe(addr, LogHandler(handleStatic(serv)))
+	// addr := "0.0.0.0:3000"
+
+	fmt.Printf("Serving data at %v\n", fullAddr)
+	err := http.ListenAndServe(fullAddr, LogHandler(handleStatic(serv)))
 
 	if err != nil {
 		log.Fatal(err)
