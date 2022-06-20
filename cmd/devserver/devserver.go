@@ -57,8 +57,10 @@ func serve() error {
 		return err
 	}
 
-	fmt.Println("Serving dev data from ", path)
-	return http.ListenAndServe("localhost:8001", fs)
+	addr := "localhost:8001"
+
+	fmt.Printf("Serving dev data from %v at %v\n", path, addr)
+	return http.ListenAndServe(addr, fs)
 }
 
 func main() {

@@ -6,17 +6,32 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"path"
 	"time"
 )
 
+const dripStatusFile = "DRIPS.xml.gz"
+const dripLocationFile = "LocatietabelDRIPS.xml.gz"
+
 func updateDrips(baseUrl string, serv *DripServ) error {
 
+	sourceURL, err := url.Parse(baseUrl)
+
+	if err != nil {
+		return err
+	}
+
 	//Fetching
-	dripResp, err := http.Get(baseUrl + "DRIPS.xml.gz")
+	dripResp, err := http.Get("http://" + sourceURL.Host + "/" + path.Join(sourceURL.Path, dripStatusFile))
 	if err != nil {
 		return err
 	}
 	defer dripResp.Body.Close()
+
+	if dripResp.StatusCode != 200 {
+		return fmt.Errorf("server responded with %v", dripResp.Status)
+	}
 
 	dripGz, err := io.ReadAll(dripResp.Body)
 	if err != nil {
@@ -25,20 +40,27 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 
 	// os.WriteFile("./test.gz", dripGz, os.ModeAppend)
 
-	locResp, err := http.Get(baseUrl + "LocatietabelDRIPS.xml.gz")
+	locResp, err := http.Get("http://" + sourceURL.Host + "/" + path.Join(sourceURL.Path, dripLocationFile))
 	if err != nil {
 		return err
 	}
 	defer locResp.Body.Close()
+
+	if locResp.StatusCode != 200 {
+		return fmt.Errorf("server responded with %v", locResp.Status)
+	}
+
 	locGz, err := io.ReadAll(locResp.Body)
 	if err != nil {
 		return err
 	}
 
 	r, err := gzip.NewReader(bytes.NewReader(dripGz))
+
 	if err != nil {
 		return err
 	}
+
 	dripsFile, err := io.ReadAll(r)
 	if err != nil {
 		return err

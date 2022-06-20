@@ -1,16 +1,15 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 	"time"
 )
 
 const UpdateInterval = time.Minute * 5
-const BaseURL = "http://opendata.ndw.nu/"
-
-// const BaseURL = "http://localhost:8000/"
 
 type DripServ struct {
 	sync.Mutex
@@ -46,21 +45,25 @@ func (d *Drip) hasImage() bool {
 	return true
 }
 
-func update(c <-chan time.Time, serv *DripServ) {
+func update(sourceUrl string, c <-chan time.Time, serv *DripServ) {
 	for range c {
-		fmt.Println("Updating")
-		updateDrips(BaseURL, serv)
+		fmt.Println("Updating from ", sourceUrl)
+		updateDrips(sourceUrl, serv)
 	}
 }
 
 func main() {
+	sourceUrl := flag.String("sourceURL", "http://opendata.ndw.nu/", "Full URL to retrieve the source data from")
+
+	flag.Parse()
+
 	serv := newServ()
 	ticker := time.NewTicker(UpdateInterval)
-	err := updateDrips(BaseURL, &serv)
+	err := updateDrips(*sourceUrl, &serv)
 	if err != nil {
-		println(err.Error())
+		log.Fatalln(err)
 	}
-	go update(ticker.C, &serv)
+	go update(*sourceUrl, ticker.C, &serv)
 
 	// placeDripsFile()
 	ServeData(&serv)
