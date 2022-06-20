@@ -47,8 +47,9 @@ func (d *Drip) hasImage() bool {
 
 func update(sourceUrl string, c <-chan time.Time, serv *DripServ) {
 	for range c {
-		fmt.Println("Updating from ", sourceUrl)
+		start := time.Now()
 		updateDrips(sourceUrl, serv)
+		fmt.Printf("Updating from %v took %v\n", sourceUrl, time.Since(start))
 	}
 }
 
@@ -63,6 +64,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Printf("Succesfully got data from %v\n", *sourceUrl)
 	go update(*sourceUrl, ticker.C, &serv)
 
 	// placeDripsFile()

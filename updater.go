@@ -97,7 +97,5 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 		serv.dripsMap[drip.Id] = drip
 	}
 
-	fmt.Println("Drips updated")
-
 	return nil
 }

@@ -92,8 +92,10 @@ func handleStatic(serv *DripServ) http.Handler {
 func ServeData(serv *DripServ) {
 	// http.Handle("/static/", handleStatic(serv))
 
-	fmt.Println("Serving data")
-	err := http.ListenAndServe(":3000", LogHandler(handleStatic(serv)))
+	addr := "localhost:3000"
+
+	fmt.Printf("Serving data at %v\n", addr)
+	err := http.ListenAndServe(addr, LogHandler(handleStatic(serv)))
 
 	if err != nil {
 		log.Fatal(err)
