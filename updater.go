@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -14,68 +13,55 @@ import (
 const dripStatusFile = "DRIPS.xml.gz"
 const dripLocationFile = "LocatietabelDRIPS.xml.gz"
 
-func updateDrips(baseUrl string, serv *DripServ) error {
-
+// Get a file from the given base url, optionally decompressing it
+// BaseURL is parsed and only the host(+port) and path is used
+// protocol is always set to http and the given filename is appended
+func getFile(baseUrl, filePath string, gZip bool) ([]byte, error) {
 	sourceURL, err := url.Parse(baseUrl)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	//Fetching
-	dripResp, err := http.Get("http://" + sourceURL.Host + "/" + path.Join(sourceURL.Path, dripStatusFile))
+	response, err := http.Get("http://" + sourceURL.Host + "/" + path.Join(sourceURL.Path, filePath))
 	if err != nil {
-		return err
-	}
-	defer dripResp.Body.Close()
-
-	if dripResp.StatusCode != 200 {
-		return fmt.Errorf("server responded with %v", dripResp.Status)
+		return nil, err
 	}
 
-	dripGz, err := io.ReadAll(dripResp.Body)
-	if err != nil {
-		return err
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		return nil, fmt.Errorf("server responded with %v", response.Status)
 	}
 
-	// os.WriteFile("./test.gz", dripGz, os.ModeAppend)
+	var reader io.ReadCloser
 
-	locResp, err := http.Get("http://" + sourceURL.Host + "/" + path.Join(sourceURL.Path, dripLocationFile))
-	if err != nil {
-		return err
+	if gZip {
+		reader, err = gzip.NewReader(response.Body)
+	} else {
+		reader = response.Body
 	}
-	defer locResp.Body.Close()
-
-	if locResp.StatusCode != 200 {
-		return fmt.Errorf("server responded with %v", locResp.Status)
-	}
-
-	locGz, err := io.ReadAll(locResp.Body)
-	if err != nil {
-		return err
-	}
-
-	r, err := gzip.NewReader(bytes.NewReader(dripGz))
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	dripsFile, err := io.ReadAll(r)
-	if err != nil {
-		return err
+	return io.ReadAll(reader)
+}
+
+func updateDrips(baseUrl string, serv *DripServ) error {
+	dripsFile, dripsErr := getFile(baseUrl, dripStatusFile, true)
+	if dripsErr != nil {
+		return dripsErr
 	}
 
-	locR, err := gzip.NewReader(bytes.NewReader(locGz))
-	if err != nil {
-		return err
-	}
-	locFile, err := io.ReadAll(locR)
-	if err != nil {
-		return err
+	locationsFile, locErr := getFile(baseUrl, dripLocationFile, true)
+	if locErr != nil {
+		return locErr
 	}
 
-	allDrips, err := parseDripsXML(dripsFile, locFile)
+	allDrips, err := parseDripsXML(dripsFile, locationsFile)
+
 	if err != nil {
 		return err
 	}
