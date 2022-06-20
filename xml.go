@@ -50,6 +50,34 @@ func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	return nil
 }
 
+func imagesFromFile(file []byte) (map[string][]byte, error) {
+
+	payload := XMLPayloadPublication{}
+	err := xml.Unmarshal(file, &payload)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[string][]byte, len(payload.Drips))
+	for _, vmsUnit := range payload.Drips {
+		if len(vmsUnit.Image) == 0 {
+			continue
+		}
+
+		img, err := base64.StdEncoding.DecodeString(vmsUnit.Image)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(img) == 0 {
+			continue
+		}
+		out[vmsUnit.RefId.Id] = img
+	}
+
+	return out, nil
+
+}
+
 func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 	payload := XMLPayloadPublication{}
 	err := xml.Unmarshal(contentFile, &payload)

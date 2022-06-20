@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -55,8 +56,18 @@ func update(sourceUrl string, c <-chan time.Time, serv *DripServ) {
 
 func main() {
 	sourceUrl := flag.String("sourceURL", "http://opendata.ndw.nu/", "Full URL to retrieve the source data from")
+	downloadOnly := flag.Bool("download", false, "Only download images and quit")
+	outDir := flag.String("outdir", ".", "Output directory for files")
 
 	flag.Parse()
+
+	if *downloadOnly {
+		error := outputImages(*sourceUrl, *outDir)
+		if error != nil {
+			log.Fatalln(error)
+		}
+		return
+	}
 
 	serv := newServ()
 	ticker := time.NewTicker(UpdateInterval)
@@ -71,54 +82,63 @@ func main() {
 	ServeData(&serv)
 }
 
-func placeDripsFile() {
+// // Ensures a given directory relative to the workig directory exists
+// func ensureTargetDirectoryExists(dirName string) error {
+// 	stat, err := os.Stat(dirName)
 
-	var err error
-	dripsFile, err := os.ReadFile("./DRIPS.xml")
+// 	if errors.Is(err, fs.ErrNotExist) {
+// 		err = os.MkdirAll(dirName, os.ModeDir)
+// 		if err != nil {
+// 			return fmt.Errorf("error creating directory: %w", err)
+// 		}
+// 	}
+
+// 	if err != nil {
+// 		return fmt.Errorf("error getting target directory stats: %w", err)
+// 	}
+
+// 	if stat.IsDir() {
+// 		return nil
+// 	} else {
+// 		return fmt.Errorf("target path is not a directory")
+// 	}
+
+// }
+
+func outputImages(baseUrl, outDir string) error {
+	dripsFile, err := getFile(baseUrl, dripStatusFile, true)
 	if err != nil {
-		fmt.Printf("Error reading drips file: %v\n", err)
-		return
+		return err
 	}
 
-	locFile, err := os.ReadFile("./LocatietabelDRIPS.xml")
+	images, err := imagesFromFile(dripsFile)
 	if err != nil {
-		fmt.Printf("Error reading location file: %v\n", err)
-		return
+		return err
 	}
 
-	drips, err := parseDripsXML(dripsFile, locFile)
+	targetDir := filepath.ToSlash(filepath.Clean(outDir))
 
+	err = os.MkdirAll(targetDir, os.ModeDir)
 	if err != nil {
-		fmt.Printf("Error unmarshalling xml: %v\n", err)
-		return
+		return fmt.Errorf("error while ensuring output directory exists: %w", err)
 	}
 
-	os.Mkdir("./static", os.ModeType)
-	os.Mkdir("./static/images", os.ModeType)
+	for id, img := range images {
+		fileName := filepath.ToSlash(filepath.Join("./"+targetDir, id+".png"))
 
-	for _, p := range drips {
-		if p.image == nil { //Skip empty
-			continue
+		err := os.WriteFile(fileName, img, os.ModeType)
+		if err != nil {
+			fmt.Fprint(os.Stderr, "Error writing file", err)
 		}
-		// // imgData, err := base64.StdEncoding.DecodeString(p.image)
-		// if err != nil {
-		// 	fmt.Printf("Error decoding image %v\n", err)
-		// }
-
-		writeErr := os.WriteFile("./static/images/"+p.Id+".png", p.image, os.ModeType)
-		if writeErr != nil {
-			fmt.Println(writeErr)
-		}
 	}
 
-	jsonFile, encodingErr := marshallJson(drips)
-	if encodingErr != nil {
-		fmt.Print(encodingErr)
-		return
+	path, err := filepath.Abs(outDir)
+	if err != nil {
+		return err
 	}
 
-	writeErr := os.WriteFile("./static/data.json", jsonFile, os.ModeType)
-	if writeErr != nil {
-		fmt.Println(writeErr)
-	}
+	fmt.Printf("Written %v images to %v\n", len(images), path)
+
+	return nil
+
 }
