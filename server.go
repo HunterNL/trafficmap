@@ -11,7 +11,7 @@ import (
 
 func LogHandler(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println("Request hit", r.URL.Path)
+		// fmt.Println("Request hit", r.URL.Path)
 		h.ServeHTTP(w, r)
 	})
 }
@@ -82,6 +82,7 @@ func handleStatic(serv *DripServ) http.Handler {
 	mux.Handle("/", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.html", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.js", handleFileRead("index.js", "text/javascript"))
+	mux.Handle("/leaflet.canvas-markers.js", handleFileRead("leaflet.canvas-markers.js", "text/javascript"))
 	mux.Handle("/style.css", handleFileRead("style.css", "text/css"))
 	mux.Handle("/images/", handleImages(serv))
 	mux.Handle("/data.json", handleDataRead(serv))
@@ -90,11 +91,7 @@ func handleStatic(serv *DripServ) http.Handler {
 }
 
 func ServeData(addr string, port int, serv *DripServ) {
-	// http.Handle("/static/", handleStatic(serv))
-
 	fullAddr := fmt.Sprintf("%v:%v", addr, port)
-
-	// addr := "0.0.0.0:3000"
 
 	fmt.Printf("Serving data at %v\n", fullAddr)
 	err := http.ListenAndServe(fullAddr, LogHandler(handleStatic(serv)))

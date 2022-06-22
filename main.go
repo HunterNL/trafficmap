@@ -32,6 +32,8 @@ type Drip struct {
 	Lat         string `json:"lat"`
 	Lon         string `json:"lon"`
 	Description string `json:"description"`
+	ImageWidth  int    `json:"imageWidth"`
+	ImageHeight int    `json:"imageHeight"`
 }
 
 func (d *Drip) hasImage() bool {

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/xml"
+	"image/png"
 )
 
 type LocationRecordMap map[string]Location
@@ -114,7 +116,15 @@ func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 			continue // Ignore empty images
 		}
 
+		image, err := png.Decode(bytes.NewReader(img))
+
+		if err != nil {
+			continue // Ignore faulty images
+		}
+
 		drips[i].image = img
+		drips[i].ImageWidth = image.Bounds().Dx()
+		drips[i].ImageHeight = image.Bounds().Dy()
 	}
 
 	return drips, nil
