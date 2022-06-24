@@ -1,3 +1,7 @@
+
+const DEFAULT_ZOOM_LEVEL = 9
+const MIN_DRAG_TO_DISMISS = 200
+
 function onReady(f) {
     if (document.readyState == "complete" || document.readyState == "interactive") {
         f()
@@ -17,6 +21,29 @@ function setSidebarVisibility(bool) {
         document.getElementById("sidebar")?.classList.remove("visible")
     }
     
+}
+
+function imageForDripId(id) {
+    return "./images/" + id + ".png"
+}
+
+
+const dripDb = new Map()
+
+function renderDripToSidebar(sidebarElement, drip) {
+    img = sidebarElement.querySelector("img")
+    img.src = imageForDripId(drip.id)
+}
+
+function onMarkerClick(a,b,c) {
+    const dripId = b[0].data.dripId
+    const drip = dripDb.get(dripId)
+
+    sidebar = document.getElementById("sidebar")
+
+    renderDripToSidebar(sidebar, drip)
+
+    setSidebarVisibility(true)
 }
 
 const imageFactorForZoomLevel = (lvl) => lvl / 18
@@ -49,8 +76,6 @@ function setIconZoomEffect(zoomLevel, markerLayer, markers) {
 }
 
 
-const DEFAULT_ZOOM_LEVEL = 9
-
 function addSwipeListener(element) {
     if(!(element instanceof Element)) {
         throw new Error("Given argument is not an Element")
@@ -76,7 +101,7 @@ function addSwipeListener(element) {
         element.style.transform = null
         element.style.transition = "transform .2s"
 
-        if(difference > 300) {
+        if(difference > MIN_DRAG_TO_DISMISS) {
             element.classList.remove('visible')
         }
     }
@@ -120,6 +145,8 @@ function setupMap() {
 
     console.log("Leaflet instance:", map)
 
+    markerLayer.addOnClickListener(onMarkerClick)
+
     map.addEventListener("zoom", (e) => {
         setIconZoomEffect(map.getZoom(), markerLayer, markers)
     })
@@ -129,6 +156,7 @@ function setupMap() {
     }).addTo(map)
 
     map.attributionControl.addAttribution('Data: <a href="http://opendata.ndw.nu/">opendata.ndw.nu/</a>')
+
 
     getData().then(d => {
 
@@ -144,7 +172,7 @@ function setupMap() {
             }
 
             const icon = L.icon({
-                iconUrl: "./images/" + drip.id + ".png",
+                iconUrl: imageForDripId(drip.id),
                 iconSize: [imgX, imgY],
                 iconSizeOrig: [imgX, imgY],
                 iconAnchor: [imgX / 2, imgY / 2],
@@ -152,6 +180,9 @@ function setupMap() {
             })
 
             const marker = L.marker([lat, lon], { icon })
+            marker.dripId = drip.id
+
+            dripDb.set(drip.id, drip)
 
             markers.push(marker)
         })
