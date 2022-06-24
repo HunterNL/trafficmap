@@ -9,10 +9,6 @@ import (
 
 type LocationRecordMap map[string]Location
 
-type Location struct {
-	Description, Latitude, Longitude string
-}
-
 type XMLvmsUnitReference struct {
 	Id string `xml:"id,attr"`
 }
@@ -22,7 +18,7 @@ type XMLvms struct {
 	Image string              `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
 }
 
-type XMLVMSRecord struct {
+type Location struct {
 	Id          string `xml:"id,attr"`
 	Description string `xml:"vmsRecord>vmsRecord>vmsDescription>values>value"`
 	Latitude    string `xml:"vmsRecord>vmsRecord>vmsLocation>locationForDisplay>latitude"`
@@ -30,16 +26,13 @@ type XMLVMSRecord struct {
 }
 
 func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	r := XMLVMSRecord{}
+	r := Location{}
 	err := d.DecodeElement(&r, &start)
 	if err != nil {
 		return err
 	}
 
-	(*l)[r.Id] = Location{
-		Description: r.Description,
-		Latitude:    r.Latitude,
-		Longitude:   r.Longitude}
+	(*l)[r.Id] = r
 
 	return nil
 }
