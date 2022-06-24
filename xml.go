@@ -13,10 +13,6 @@ type Location struct {
 	Description, Latitude, Longitude string
 }
 
-type XMLPayloadPublication struct {
-	Drips []XMLvms `xml:"Body>d2LogicalModel>payloadPublication>vmsUnit"`
-}
-
 type XMLvmsUnitReference struct {
 	Id string `xml:"id,attr"`
 }
@@ -31,10 +27,6 @@ type XMLVMSRecord struct {
 	Description string `xml:"vmsRecord>vmsRecord>vmsDescription>values>value"`
 	Latitude    string `xml:"vmsRecord>vmsRecord>vmsLocation>locationForDisplay>latitude"`
 	Longitude   string `xml:"vmsRecord>vmsRecord>vmsLocation>locationForDisplay>longitude"`
-}
-
-type XMLUnitTable struct {
-	Locations LocationRecordMap `xml:"Body>d2LogicalModel>payloadPublication>vmsUnitTable>vmsUnitRecord"`
 }
 
 func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -53,14 +45,13 @@ func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func imagesFromFile(file []byte) (map[string][]byte, error) {
-
-	payload := XMLPayloadPublication{}
-	err := xml.Unmarshal(file, &payload)
+	vmsUnits, err := parseVMsUnits(file)
 	if err != nil {
 		return nil, err
 	}
-	out := make(map[string][]byte, len(payload.Drips))
-	for _, vmsUnit := range payload.Drips {
+
+	out := make(map[string][]byte, len(vmsUnits))
+	for _, vmsUnit := range vmsUnits {
 		if len(vmsUnit.Image) == 0 {
 			continue
 		}
@@ -81,7 +72,9 @@ func imagesFromFile(file []byte) (map[string][]byte, error) {
 }
 
 func parseLocations(locationFile []byte, expectedSize int) (LocationRecordMap, error) {
-	locations := XMLUnitTable{
+	locations := struct {
+		Locations LocationRecordMap `xml:"Body>d2LogicalModel>payloadPublication>vmsUnitTable>vmsUnitRecord"`
+	}{
 		Locations: make(LocationRecordMap, expectedSize),
 	}
 
@@ -94,7 +87,9 @@ func parseLocations(locationFile []byte, expectedSize int) (LocationRecordMap, e
 }
 
 func parseVMsUnits(contentFile []byte) ([]XMLvms, error) {
-	payload := XMLPayloadPublication{}
+	payload := struct {
+		Drips []XMLvms `xml:"Body>d2LogicalModel>payloadPublication>vmsUnit"`
+	}{}
 	err := xml.Unmarshal(contentFile, &payload)
 	if err != nil {
 		return nil, err
