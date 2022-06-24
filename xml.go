@@ -80,25 +80,43 @@ func imagesFromFile(file []byte) (map[string][]byte, error) {
 
 }
 
-func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
+func parseLocations(locationFile []byte, expectedSize int) (LocationRecordMap, error) {
+	locations := XMLUnitTable{
+		Locations: make(LocationRecordMap, expectedSize),
+	}
+
+	err := xml.Unmarshal(locationFile, &locations)
+	if err != nil {
+		return nil, err
+	}
+
+	return locations.Locations, nil
+}
+
+func parseVMsUnits(contentFile []byte) ([]XMLvms, error) {
 	payload := XMLPayloadPublication{}
 	err := xml.Unmarshal(contentFile, &payload)
 	if err != nil {
-		return []Drip{}, err
+		return nil, err
 	}
 
-	locations := XMLUnitTable{
-		Locations: make(LocationRecordMap, len(payload.Drips)),
+	return payload.Drips, nil
+}
+
+func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
+	vmsUnits, err := parseVMsUnits(contentFile)
+	if err != nil {
+		return nil, err
 	}
-	err2 := xml.Unmarshal(locationFile, &locations)
-	if err2 != nil {
-		return []Drip{}, err2
+	locations, err := parseLocations(locationFile, len(vmsUnits))
+	if err != nil {
+		return nil, err
 	}
 
-	drips := make([]Drip, len(payload.Drips))
+	drips := make([]Drip, len(vmsUnits))
 
-	for i, d := range payload.Drips {
-		loc := locations.Locations[d.RefId.Id]
+	for i, d := range vmsUnits {
+		loc := locations[d.RefId.Id]
 
 		drips[i] = Drip{
 			Id:          d.RefId.Id,
