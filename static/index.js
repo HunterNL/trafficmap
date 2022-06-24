@@ -10,6 +10,15 @@ async function getData() {
     return fetch("./data.json").then(r => r.json())
 }
 
+function setSidebarVisibility(bool) {
+    if(bool) {
+        document.getElementById("sidebar")?.classList.add("visible")
+    } else {
+        document.getElementById("sidebar")?.classList.remove("visible")
+    }
+    
+}
+
 const imageFactorForZoomLevel = (lvl) => lvl / 18
 const opacityForZoomLevel = (lvl) => .5 + lvl/40
 
@@ -42,60 +51,109 @@ function setIconZoomEffect(zoomLevel, markerLayer, markers) {
 
 const DEFAULT_ZOOM_LEVEL = 9
 
+function addSwipeListener(element) {
+    if(!(element instanceof Element)) {
+        throw new Error("Given argument is not an Element")
+    }
+
+    let touchStartY = 0
+
+    function onStart(e) {
+        touchStartY = e.targetTouches[0].clientY
+
+        element.style.transition = "transform .015s"
+    }
+
+    function onMove(e) {
+        const currentY = e.targetTouches[0].clientY
+        element.style.transform = "translate3d(0,"+Math.max(0,currentY - touchStartY)+"px,0)"
+    }
+
+    function onEnd(e) {
+        const currentY = e.changedTouches[0].clientY
+        const difference = currentY-touchStartY
+        
+        element.style.transform = null
+        element.style.transition = "transform .2s"
+
+        if(difference > 300) {
+            element.classList.remove('visible')
+        }
+    }
+
+    element.addEventListener("touchstart", onStart,{passive:true})
+    element.addEventListener("touchmove", onMove,{passive:true})
+    element.addEventListener("touchend", onEnd,{passive:true})
+}
+
+function setupSidebarSwipe() {
+    const     sidebar = document.getElementById("sidebar");
+    if(!sidebar) {
+        throw new Error("Sidebar element not found")
+    }
+
+    addSwipeListener(sidebar)
+}
+
 onReady(() => {
-    const mapContainer = document.getElementById("map");
-    if(!mapContainer) {
+    setupMap()
+    setupSidebarSwipe()
+})
+
+function setupMap() {
+    const mapContainer = document.getElementById("map")
+    if (!mapContainer) {
         throw new Error("Map element not found")
     }
 
-    if(typeof L === "undefined") {
+    if (typeof L === "undefined") {
         throw new Error("Leaflet not found")
     }
 
     layerFactory(L) // Initalize leaflet plugin
-    
-    const map = L.map(mapContainer).setView([52.196665, 5.0811767], DEFAULT_ZOOM_LEVEL);
+
+    const map = L.map(mapContainer).setView([52.196665, 5.0811767], DEFAULT_ZOOM_LEVEL)
     const markerLayer = L.canvasIconLayer({
         opacity: opacityForZoomLevel(DEFAULT_ZOOM_LEVEL)
     }).addTo(map)
-    const markers = [];
+    const markers = []
 
-    console.log("Leaflet instance:",map)
+    console.log("Leaflet instance:", map)
 
-    map.addEventListener("zoom",(e) => {
+    map.addEventListener("zoom", (e) => {
         setIconZoomEffect(map.getZoom(), markerLayer, markers)
     })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    }).addTo(map)
 
-    map.attributionControl.addAttribution('Data: <a href="http://opendata.ndw.nu/">opendata.ndw.nu/</a>');
+    map.attributionControl.addAttribution('Data: <a href="http://opendata.ndw.nu/">opendata.ndw.nu/</a>')
 
     getData().then(d => {
 
         d.drips.forEach(drip => {
-            const lat = parseFloat(drip.lat,10)
-            const lon = parseFloat(drip.lon,10)
+            const lat = parseFloat(drip.lat, 10)
+            const lon = parseFloat(drip.lon, 10)
 
             const imgX = parseInt(drip.imageWidth)
             const imgY = parseInt(drip.imageHeight)
 
-            if(Number.isNaN(lat) || Number.isNaN(lon)) {
+            if (Number.isNaN(lat) || Number.isNaN(lon)) {
                 return
             }
 
             const icon = L.icon({
-                iconUrl: "./images/"+drip.id+".png",
-                iconSize: [imgX,imgY],
-                iconSizeOrig: [imgX,imgY],
-                iconAnchor: [imgX/2,imgY/2],
+                iconUrl: "./images/" + drip.id + ".png",
+                iconSize: [imgX, imgY],
+                iconSizeOrig: [imgX, imgY],
+                iconAnchor: [imgX / 2, imgY / 2],
                 // html: img
             })
 
-            const marker = L.marker([lat,lon],{icon})
+            const marker = L.marker([lat, lon], { icon })
 
-            markers.push(marker)            
+            markers.push(marker)
         })
 
 
@@ -103,6 +161,6 @@ onReady(() => {
 
         markerLayer.addLayers(markers)
 
-        console.log("Added",markers.length,"displays to the map")
+        console.log("Added", markers.length, "displays to the map")
     })
-})
+}
