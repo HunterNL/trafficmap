@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0" modelBaseVersion="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <payloadPublication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="VmsTablePublication" lang="nl">
+                <publicationTime>2022-02-05T05:30:00.000Z</publicationTime>
+                <vmsUnitTable>
+                    <vmsUnitRecord id="ID_1" version="157">
+                        <numberOfVms>1</numberOfVms>
+                        <vmsRecord vmsIndex="1">
+                            <vmsRecord>
+                                <vmsDescription>
+                                    <values>
+                                        <value lang="nl">Description 1</value>
+                                    </values>
+                                </vmsDescription>
+                                <vmsLocation xsi:type="Point">
+                                    <locationForDisplay>
+                                        <latitude>52.1</latitude>
+                                        <longitude>4.2</longitude>
+                                    </locationForDisplay>
+                                </vmsLocation>
+                            </vmsRecord>
+                        </vmsRecord>
+                    </vmsUnitRecord>
+                    <vmsUnitRecord id="ID_2" version="157">
+                        <numberOfVms>1</numberOfVms>
+                        <vmsRecord vmsIndex="1">
+                            <vmsRecord>
+                                <vmsDescription>
+                                    <values>
+                                        <value lang="nl">Description 2</value>
+                                    </values>
+                                </vmsDescription>
+                                <vmsLocation xsi:type="Point">
+                                    <locationForDisplay>
+                                        <latitude>52.3</latitude>
+                                        <longitude>4.4</longitude>
+                                    </locationForDisplay>
+                                </vmsLocation>
+                            </vmsRecord>
+                        </vmsRecord>
+                    </vmsUnitRecord>
+                    <vmsUnitRecord id="ID_3">
+                        <numberOfVms>1</numberOfVms>
+                        <vmsRecord vmsIndex="1">
+                            <vmsRecord>
+                                <vmsDescription>
+                                    <values>
+                                        <value lang="nl">Description 3</value>
+                                    </values>
+                                </vmsDescription>
+                                <vmsLocation xsi:type="Point">
+                                    <locationForDisplay>
+                                        <latitude>52.4</latitude>
+                                        <longitude>4.5</longitude>
+                                    </locationForDisplay>
+                                </vmsLocation>
+                            </vmsRecord>
+                        </vmsRecord>
+                    </vmsUnitRecord>
+                </vmsUnitTable>
+            </payloadPublication>
+        </d2LogicalModel>
+    </SOAP:Body>
+</SOAP:Envelope>

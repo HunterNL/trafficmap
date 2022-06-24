@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0" modelBaseVersion="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <payloadPublication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="VmsPublication" lang="nl">
+                <publicationTime>2022-01-02T13:44:55.678Z</publicationTime>
+                <vmsUnit>
+                    <vmsUnitReference id="ID_1"/>
+                    <vms vmsIndex="1">
+                        <vms>
+                            <vmsWorking>true</vmsWorking>
+                            <vmsMessage messageIndex="1">
+                                <vmsMessage>
+                                    <timeLastSet>2022-02-02T22:22:22Z</timeLastSet>
+                                    <textPage pageNumber="1">
+                                        <vmsText>
+                                            <vmsTextLine lineIndex="1">
+                                                <vmsTextLine>
+                                                    <vmsTextLine>Textline 1</vmsTextLine>
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                            <vmsTextLine lineIndex="2">
+                                                <vmsTextLine>
+                                                    <vmsTextLine>Textline 2</vmsTextLine>
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                            <vmsTextLine lineIndex="3">
+                                                <vmsTextLine>
+                                                    <vmsTextLine>Textline 3</vmsTextLine>
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                        </vmsText>
+                                    </textPage>
+                                </vmsMessage>
+                            </vmsMessage>
+                        </vms>
+                    </vms>
+                </vmsUnit>
+                <vmsUnit>
+                    <vmsUnitReference id="ID_2"/>
+                    <vms vmsIndex="1">
+                        <vms>
+                            <vmsWorking>true</vmsWorking>
+                            <vmsMessage messageIndex="1">
+                                <vmsMessage>
+                                    <timeLastSet>2022-02-02T1:23:45Z</timeLastSet>
+                                    <vmsMessageExtension>
+                                        <vmsMessageExtension>
+                                            <vmsImage>
+                                                <imageData>
+                                                    <binary>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</binary>
+                                                    <encoding>base64</encoding>
+                                                    <mimeType>image/png</mimeType>
+                                                </imageData>
+                                            </vmsImage>
+                                        </vmsMessageExtension>
+                                    </vmsMessageExtension>
+                                </vmsMessage>
+                            </vmsMessage>
+                        </vms>
+                    </vms>
+                </vmsUnit>
+                <vmsUnit>
+                    <vmsUnitReference id="ID_3" />
+                    <vms vmsIndex="1">
+                        <vms>
+                            <vmsWorking>true</vmsWorking>
+                            <vmsMessage messageIndex="1">
+                                <vmsMessage>
+                                    <timeLastSet>2022-02-02T12:34:56Z</timeLastSet>
+                                    <textPage pageNumber="1">
+                                        <vmsText>
+                                            <vmsTextLine lineIndex="1">
+                                                <vmsTextLine>
+                                                    <vmsTextLine />
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                            <vmsTextLine lineIndex="2">
+                                                <vmsTextLine>
+                                                    <vmsTextLine />
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                            <vmsTextLine lineIndex="3">
+                                                <vmsTextLine>
+                                                    <vmsTextLine />
+                                                </vmsTextLine>
+                                            </vmsTextLine>
+                                        </vmsText>
+                                    </textPage>
+                                </vmsMessage>
+                            </vmsMessage>
+                        </vms>
+                    </vms>
+                </vmsUnit>
+            </payloadPublication>
+        </d2LogicalModel>
+    </SOAP:Body>
+</SOAP:Envelope>
