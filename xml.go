@@ -7,13 +7,9 @@ import (
 	"image/png"
 )
 
-type vmsUnitReference struct {
-	Id string `xml:"id,attr"`
-}
-
 type vms struct {
-	RefId vmsUnitReference `xml:"vmsUnitReference"`
-	Image string           `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+	Id    string
+	Image string
 }
 
 type location struct {
@@ -34,6 +30,27 @@ func (l *locationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 
 	(*l)[r.Id] = r
+
+	return nil
+}
+
+func (l *vms) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+
+	// Can't unmarshal a child's attribute directly, so we need some sub-struct trickery
+	temp := struct {
+		Id struct {
+			Id string `xml:"id,attr"`
+		} `xml:"vmsUnitReference"`
+		Image string `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+	}{}
+
+	err := d.DecodeElement(&temp, &start)
+	if err != nil {
+		return err
+	}
+
+	l.Id = temp.Id.Id
+	l.Image = temp.Image
 
 	return nil
 }
@@ -59,7 +76,7 @@ func imagesFromFile(file []byte) (map[string][]byte, error) {
 		if len(img) == 0 {
 			continue
 		}
-		out[vmsUnit.RefId.Id] = img
+		out[vmsUnit.Id] = img
 	}
 
 	return out, nil
@@ -106,10 +123,10 @@ func ParseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 	drips := make([]Drip, len(vmsUnits))
 
 	for i, d := range vmsUnits {
-		loc := locations[d.RefId.Id]
+		loc := locations[d.Id]
 
 		drips[i] = Drip{
-			Id:          d.RefId.Id,
+			Id:          d.Id,
 			Lat:         loc.Latitude,
 			Lon:         loc.Longitude,
 			Description: loc.Description,
