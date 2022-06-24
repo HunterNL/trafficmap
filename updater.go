@@ -60,7 +60,7 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 		return locErr
 	}
 
-	allDrips, err := parseDripsXML(dripsFile, locationsFile)
+	allDrips, err := ParseDripsXML(dripsFile, locationsFile)
 
 	if err != nil {
 		return err

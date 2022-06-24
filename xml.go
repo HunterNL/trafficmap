@@ -7,26 +7,27 @@ import (
 	"image/png"
 )
 
-type LocationRecordMap map[string]Location
-
-type XMLvmsUnitReference struct {
+type vmsUnitReference struct {
 	Id string `xml:"id,attr"`
 }
 
-type XMLvms struct {
-	RefId XMLvmsUnitReference `xml:"vmsUnitReference"`
-	Image string              `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+type vms struct {
+	RefId vmsUnitReference `xml:"vmsUnitReference"`
+	Image string           `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
 }
 
-type Location struct {
+type location struct {
 	Id          string `xml:"id,attr"`
 	Description string `xml:"vmsRecord>vmsRecord>vmsDescription>values>value"`
 	Latitude    string `xml:"vmsRecord>vmsRecord>vmsLocation>locationForDisplay>latitude"`
 	Longitude   string `xml:"vmsRecord>vmsRecord>vmsLocation>locationForDisplay>longitude"`
 }
 
-func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	r := Location{}
+// Used to parse XML directly into a map instead of a slice
+type locationRecordMap map[string]location
+
+func (l *locationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	r := location{}
 	err := d.DecodeElement(&r, &start)
 	if err != nil {
 		return err
@@ -37,6 +38,7 @@ func (l *LocationRecordMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	return nil
 }
 
+// Renders images without the location file
 func imagesFromFile(file []byte) (map[string][]byte, error) {
 	vmsUnits, err := parseVMsUnits(file)
 	if err != nil {
@@ -64,11 +66,11 @@ func imagesFromFile(file []byte) (map[string][]byte, error) {
 
 }
 
-func parseLocations(locationFile []byte, expectedSize int) (LocationRecordMap, error) {
+func parseLocations(locationFile []byte, expectedSize int) (locationRecordMap, error) {
 	locations := struct {
-		Locations LocationRecordMap `xml:"Body>d2LogicalModel>payloadPublication>vmsUnitTable>vmsUnitRecord"`
+		Locations locationRecordMap `xml:"Body>d2LogicalModel>payloadPublication>vmsUnitTable>vmsUnitRecord"`
 	}{
-		Locations: make(LocationRecordMap, expectedSize),
+		Locations: make(locationRecordMap, expectedSize),
 	}
 
 	err := xml.Unmarshal(locationFile, &locations)
@@ -79,9 +81,9 @@ func parseLocations(locationFile []byte, expectedSize int) (LocationRecordMap, e
 	return locations.Locations, nil
 }
 
-func parseVMsUnits(contentFile []byte) ([]XMLvms, error) {
+func parseVMsUnits(contentFile []byte) ([]vms, error) {
 	payload := struct {
-		Drips []XMLvms `xml:"Body>d2LogicalModel>payloadPublication>vmsUnit"`
+		Drips []vms `xml:"Body>d2LogicalModel>payloadPublication>vmsUnit"`
 	}{}
 	err := xml.Unmarshal(contentFile, &payload)
 	if err != nil {
@@ -91,7 +93,7 @@ func parseVMsUnits(contentFile []byte) ([]XMLvms, error) {
 	return payload.Drips, nil
 }
 
-func parseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
+func ParseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 	vmsUnits, err := parseVMsUnits(contentFile)
 	if err != nil {
 		return nil, err

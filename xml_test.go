@@ -26,7 +26,7 @@ func TestXMLParsing(t *testing.T) {
 		t.FailNow()
 	}
 
-	drips, err := parseDripsXML(vmsUnits, vmsRecords)
+	drips, err := ParseDripsXML(vmsUnits, vmsRecords)
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
