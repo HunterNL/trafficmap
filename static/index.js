@@ -35,8 +35,8 @@ function renderDripToSidebar(sidebarElement, drip) {
     img.src = imageForDripId(drip.id)
 }
 
-function onMarkerClick(a,b,c) {
-    const dripId = b[0].data.dripId
+function onMarkerClick(event,data) {
+    const dripId = data[0].data.dripId
     const drip = dripDb.get(dripId)
 
     sidebar = document.getElementById("sidebar")
@@ -123,6 +123,8 @@ function setupSidebarSwipe() {
 onReady(() => {
     setupMap()
     setupSidebarSwipe()
+
+    document.getElementById("close-button")?.addEventListener("click", () => setSidebarVisibility(false))
 })
 
 function setupMap() {
