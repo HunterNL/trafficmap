@@ -31,8 +31,13 @@ function imageForDripId(id) {
 const dripDb = new Map()
 
 function renderDripToSidebar(sidebarElement, drip) {
-    img = sidebarElement.querySelector("img")
+    const img = sidebarElement.querySelector("img")
+    const state = sidebarElement.querySelector(".drip_state")
+    const description = sidebarElement.querySelector(".drip_description")
+
     img.src = imageForDripId(drip.id)
+    state.textContent = "Working: " + drip.working
+    description.textContent = drip.description
 }
 
 function onMarkerClick(event,data) {

@@ -5,11 +5,14 @@ import (
 	"encoding/base64"
 	"encoding/xml"
 	"image/png"
+	"time"
 )
 
 type vms struct {
-	Id    string
-	Image string
+	Id             string
+	Image          string
+	Working        bool
+	LastUpdateTime time.Time
 }
 
 type location struct {
@@ -41,7 +44,8 @@ func (l *vms) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		Id struct {
 			Id string `xml:"id,attr"`
 		} `xml:"vmsUnitReference"`
-		Image string `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+		Image   string `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+		Working bool   `xml:"vms>vms>vmsWorking"`
 	}{}
 
 	err := d.DecodeElement(&temp, &start)
@@ -51,6 +55,7 @@ func (l *vms) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 	l.Id = temp.Id.Id
 	l.Image = temp.Image
+	l.Working = temp.Working
 
 	return nil
 }
@@ -130,6 +135,7 @@ func ParseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 			Lat:         loc.Latitude,
 			Lon:         loc.Longitude,
 			Description: loc.Description,
+			Working:     d.Working,
 		}
 
 		img, err := base64.StdEncoding.DecodeString(d.Image)

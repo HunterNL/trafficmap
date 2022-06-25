@@ -64,7 +64,7 @@
                     <vmsUnitReference id="ID_3" />
                     <vms vmsIndex="1">
                         <vms>
-                            <vmsWorking>true</vmsWorking>
+                            <vmsWorking>false</vmsWorking>
                             <vmsMessage messageIndex="1">
                                 <vmsMessage>
                                     <timeLastSet>2022-02-02T12:34:56Z</timeLastSet>

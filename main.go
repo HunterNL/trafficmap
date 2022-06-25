@@ -34,6 +34,7 @@ type Drip struct {
 	Description string `json:"description"`
 	ImageWidth  int    `json:"imageWidth"`
 	ImageHeight int    `json:"imageHeight"`
+	Working     bool   `json:"working"`
 }
 
 func (d *Drip) hasImage() bool {

@@ -51,4 +51,8 @@ func TestXMLParsing(t *testing.T) {
 
 	assert(t, drip1.Description, "Description 1")
 
+	assert(t, drip1.Working, true)
+	assert(t, drip2.Working, true)
+	assert(t, drip3.Working, false)
+
 }
