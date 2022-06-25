@@ -95,7 +95,7 @@ html {
     padding-right: 15px;
 }
 
-#sidebar #drip_img {
+#sidebar .drip_img {
     /* margin-left: 15px; */
     /* margin-right: 15px; */
     width: 100%;

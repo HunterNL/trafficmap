@@ -31,13 +31,18 @@ function imageForDripId(id) {
 const dripDb = new Map()
 
 function renderDripToSidebar(sidebarElement, drip) {
-    const img = sidebarElement.querySelector("img")
-    const state = sidebarElement.querySelector(".drip_state")
-    const description = sidebarElement.querySelector(".drip_description")
+    const writeToElem = (elemClass,content) => sidebarElement.querySelector("."+elemClass).textContent = content
 
+    writeToElem("drip_state",drip.working)
+    writeToElem("drip_name",drip.name)
+    writeToElem("drip_org",drip.organization)
+    writeToElem("drip_road",drip.roadId)
+    writeToElem("drip_offset",drip.roadOffset)
+    writeToElem("drip_side",drip.roadSide)
+
+
+    const img = sidebarElement.querySelector("img")
     img.src = imageForDripId(drip.id)
-    state.textContent = "Working: " + drip.working
-    description.textContent = drip.description
 }
 
 function onMarkerClick(event,data) {

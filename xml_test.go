@@ -49,7 +49,7 @@ func TestXMLParsing(t *testing.T) {
 	assert(t, drip1.Lat, "52.1")
 	assert(t, drip1.Lon, "4.2")
 
-	assert(t, drip1.Description, "Description 1")
+	assert(t, drip1.Name, "Description 1")
 
 	assert(t, drip1.Working, true)
 	assert(t, drip2.Working, true)

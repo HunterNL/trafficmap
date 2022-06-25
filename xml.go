@@ -6,6 +6,8 @@ import (
 	"encoding/xml"
 	"image/png"
 	"time"
+
+	"github.com/hunternl/trafficmap/description"
 )
 
 type vms struct {
@@ -130,12 +132,18 @@ func ParseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 	for i, d := range vmsUnits {
 		loc := locations[d.Id]
 
+		nameData := description.Parse(loc.Description)
+
 		drips[i] = Drip{
-			Id:          d.Id,
-			Lat:         loc.Latitude,
-			Lon:         loc.Longitude,
-			Description: loc.Description,
-			Working:     d.Working,
+			Id:           d.Id,
+			Lat:          loc.Latitude,
+			Lon:          loc.Longitude,
+			Name:         nameData.Name,
+			Working:      d.Working,
+			RoadId:       nameData.RoadId,
+			RoadSide:     nameData.RoadSide,
+			RoadOffset:   nameData.RoadOffset,
+			Organization: nameData.Organization,
 		}
 
 		img, err := base64.StdEncoding.DecodeString(d.Image)
