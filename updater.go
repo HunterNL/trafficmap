@@ -73,6 +73,19 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 		}
 	}
 
+	// For description parsing development
+	// #TODO Seperate executable/submode?
+	// sb := bytes.Buffer{}
+
+	// for _, d := range allDrips {
+	// 	desc := description.Parse(d.Description)
+
+	// 	sb.WriteString(desc.Name)
+	// 	sb.WriteRune('\n')
+	// }
+
+	// os.WriteFile("names.txt", sb.Bytes(), os.ModeAppend)
+
 	serv.Lock()
 	defer serv.Unlock()
 

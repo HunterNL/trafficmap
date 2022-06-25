@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["--sourceURL","http://localhost:8001","--host","0.0.0.0"]
+            "args": ["--sourceURL","http://localhost:8001","--host","localhost"]
         },
         {
             "name": "Download images",
