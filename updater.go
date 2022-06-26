@@ -52,12 +52,12 @@ func getFile(baseUrl, filePath string, gZip bool) ([]byte, error) {
 func updateDrips(baseUrl string, serv *DripServ) error {
 	dripsFile, dripsErr := getFile(baseUrl, dripStatusFile, true)
 	if dripsErr != nil {
-		return dripsErr
+		return fmt.Errorf("could not retrieve drip status file: %w", dripsErr)
 	}
 
 	locationsFile, locErr := getFile(baseUrl, dripLocationFile, true)
 	if locErr != nil {
-		return locErr
+		return fmt.Errorf("could not retrieve drip location file: %w", locErr)
 	}
 
 	allDrips, err := ParseDripsXML(dripsFile, locationsFile)
