@@ -30,15 +30,38 @@ function imageForDripId(id) {
 
 const dripDb = new Map()
 
+function formatOffset(n) {
+    return ("" + n / 1000).replace(".", ",")
+}
+
+function formatSide(side) {
+    if( side == "L") {
+        return "Li"
+    }
+    if( side == "R") {
+        return "Re"
+    }
+    return ""
+}
+
 function renderDripToSidebar(sidebarElement, drip) {
     const writeToElem = (elemClass,content) => sidebarElement.querySelector("."+elemClass).textContent = content
+    const hectoElem = sidebarElement.querySelector(".hecto_container");
 
-    writeToElem("drip_state",drip.working)
     writeToElem("drip_name",drip.name)
     writeToElem("drip_org",drip.organization)
-    writeToElem("drip_road",drip.roadId)
-    writeToElem("drip_offset",drip.roadOffset)
-    writeToElem("drip_side",drip.roadSide)
+    
+
+    if(drip.roadId != "" && drip.roadOffset >= 0) {
+        hectoElem.style.display = "block"
+        writeToElem("hecto_road",drip.roadId)
+        writeToElem("hecto_bottom",formatOffset(drip.roadOffset))
+        writeToElem("hecto_side",formatSide(drip.roadSide))
+    } else {
+        hectoElem.style.display = "none"
+    }
+
+    
 
 
     const img = sidebarElement.querySelector("img")

@@ -101,3 +101,62 @@ html {
     width: 100%;
     height: auto;
 }
+
+.hecto_container {
+    --bg-color: hsl(179, 75%, 29%);
+    background-color: var(--bg-color);
+    color: white;
+    margin-left: 50px;
+    margin-top: 50px;
+    /* box-sizing: content-box; */
+    padding: 7px;
+    border-radius: 10px;
+    text-align: center;
+    width: fit-content;
+}
+.hecto {
+    border-radius: 10px;
+    padding: 7px;
+    padding-bottom: 2px;
+    background-color: var(--bg-color);
+    border: 4px solid white;
+    font-weight: 500;
+    font-family: Arial,Helvetica, sans-serif;
+}
+
+.hecto_top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.hecto_road {
+    border-radius: 2px;
+    font-weight: bold;
+    text-align: left;
+    display: inline-block;
+    background-color: rgb(236, 186, 22);
+    color: black;
+    margin-right: 30px;
+    margin-bottom: 5px;
+    padding: 2px 3px;
+    vertical-align: middle;
+    height: 100%;
+    font-size: 1.8em;
+    letter-spacing: 3px;
+    /* line-height: 1.6em; */
+}
+
+.hecto_side {
+    text-align: right;
+    display: inline-block;
+    font-size: 2em;
+    
+    
+}
+
+.hecto_bottom {
+    font-size: 2em;
+    text-align: left;
+    display: block;
+}
