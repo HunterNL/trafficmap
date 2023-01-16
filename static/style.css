@@ -135,8 +135,6 @@ html {
     font-weight: bold;
     text-align: left;
     display: inline-block;
-    background-color: rgb(236, 186, 22);
-    color: black;
     margin-right: 30px;
     margin-bottom: 5px;
     padding: 2px 3px;
@@ -145,6 +143,15 @@ html {
     font-size: 1.8em;
     letter-spacing: 3px;
     /* line-height: 1.6em; */
+}
+
+.hecto_road.road_n {
+    background-color: rgb(236, 186, 22);
+    color: black;
+}
+.hecto_road.road_a {
+    background-color: #A00005;
+    color: white;
 }
 
 .hecto_side {

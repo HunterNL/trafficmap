@@ -44,8 +44,14 @@ function formatSide(side) {
     return ""
 }
 
+function setRoadStyle(element, style) {
+    element.classList.remove("road_a","road_n","road_s")
+    element.classList.add("road_"+style.toLowerCase());
+}
+
 function renderDripToSidebar(sidebarElement, drip) {
     const writeToElem = (elemClass,content) => sidebarElement.querySelector("."+elemClass).textContent = content
+    const roadStyleElement = sidebarElement.querySelector(".hecto_road")
     const hectoElem = sidebarElement.querySelector(".hecto_container");
 
     writeToElem("drip_name",drip.name)
@@ -57,6 +63,7 @@ function renderDripToSidebar(sidebarElement, drip) {
         writeToElem("hecto_road",drip.roadId)
         writeToElem("hecto_bottom",formatOffset(drip.roadOffset))
         writeToElem("hecto_side",formatSide(drip.roadSide))
+        setRoadStyle(roadStyleElement, drip.roadId[0])
     } else {
         hectoElem.style.display = "none"
     }

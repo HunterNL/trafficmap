@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${fileDirname}",
+            "program": ".",
             "args": ["--sourceURL","http://localhost:8001","--host","localhost"]
         },
         {
