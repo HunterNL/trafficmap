@@ -133,6 +133,17 @@ func TestParseDescription(t *testing.T) {
 				Name:         "",
 			},
 		},
+		{
+			name: "Handles no space format",
+			args: "A16L69,900",
+			want: DescriptionDerivatives{
+				Organization: "",
+				RoadId:       "A16",
+				RoadOffset:   69900,
+				RoadSide:     "L",
+				Name:         "",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

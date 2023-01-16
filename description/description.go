@@ -1,10 +1,19 @@
 package description
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
 )
+
+var backupRegex, regexpError = regexp.Compile(`([AN]\d+)([LR])`)
+
+func init() {
+	if regexpError != nil {
+		panic("Error compiling regex: " + regexpError.Error())
+	}
+}
 
 type DescriptionDerivatives struct {
 	Organization string
@@ -114,6 +123,18 @@ func parseRoadData(in string) (roadId string, roadOffset int, roadSide string, d
 				roadSide = side
 				continue
 			}
+		}
+
+		if roadSide == "" && roadId == "" {
+			matches := backupRegex.FindStringSubmatch(field)
+			if len(matches) == 3 {
+				roadId = matches[1]
+				roadSide = matches[2]
+
+				stringLoc := backupRegex.FindStringIndex(field)
+				field = field[stringLoc[1]:]
+			}
+
 		}
 
 		if roadOffset == -1 {
