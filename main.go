@@ -29,16 +29,17 @@ func newServ() DripServ {
 type Drip struct {
 	Id           string `json:"id"`
 	image        []byte
-	Lat          string `json:"lat"`
-	Lon          string `json:"lon"`
-	Name         string `json:"name"`
-	ImageWidth   int    `json:"imageWidth"`
-	ImageHeight  int    `json:"imageHeight"`
-	Working      bool   `json:"working"`
-	RoadId       string `json:"roadId"`
-	RoadSide     string `json:"roadSide"`
-	RoadOffset   int    `json:"roadOffset"`
-	Organization string `json:"organization"`
+	Lat          string   `json:"lat"`
+	Lon          string   `json:"lon"`
+	Name         string   `json:"name"`
+	ImageWidth   int      `json:"imageWidth"`
+	ImageHeight  int      `json:"imageHeight"`
+	Working      bool     `json:"working"`
+	RoadId       string   `json:"roadId"`
+	RoadSide     string   `json:"roadSide"`
+	RoadOffset   int      `json:"roadOffset"`
+	Organization string   `json:"organization"`
+	TextLines    []string `json:"text"`
 }
 
 func (d *Drip) hasImage() bool {

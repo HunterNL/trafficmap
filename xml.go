@@ -15,6 +15,7 @@ type vms struct {
 	Image          string
 	Working        bool
 	LastUpdateTime time.Time
+	Text           []string
 }
 
 type location struct {
@@ -46,8 +47,9 @@ func (l *vms) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		Id struct {
 			Id string `xml:"id,attr"`
 		} `xml:"vmsUnitReference"`
-		Image   string `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
-		Working bool   `xml:"vms>vms>vmsWorking"`
+		Image   string   `xml:"vms>vms>vmsMessage>vmsMessage>vmsMessageExtension>vmsMessageExtension>vmsImage>imageData>binary"`
+		Working bool     `xml:"vms>vms>vmsWorking"`
+		Text    []string `xml:"vms>vms>vmsMessage>vmsMessage>textPage>vmsText>vmsTextLine>vmsTextLine>vmsTextLine"`
 	}{}
 
 	err := d.DecodeElement(&temp, &start)
@@ -58,6 +60,7 @@ func (l *vms) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	l.Id = temp.Id.Id
 	l.Image = temp.Image
 	l.Working = temp.Working
+	l.Text = temp.Text
 
 	return nil
 }
@@ -144,6 +147,7 @@ func ParseDripsXML(contentFile, locationFile []byte) ([]Drip, error) {
 			RoadSide:     nameData.RoadSide,
 			RoadOffset:   nameData.RoadOffset,
 			Organization: nameData.Organization,
+			TextLines:    d.Text,
 		}
 
 		img, err := base64.StdEncoding.DecodeString(d.Image)

@@ -56,6 +56,22 @@ function renderDripToSidebar(sidebarElement, drip) {
 
     writeToElem("drip_name",drip.name)
     writeToElem("drip_org",drip.organization)
+
+
+    const childElements = sidebarElement.querySelectorAll(".drip_text_line")
+
+    if(Array.isArray(drip.text)) {
+        for (let index = 0; index < drip.text.length; index++) {
+            if(index>3) break;
+            childElements[index].innerText = drip.text[index]
+        }
+    } else {
+        for (let index = 0; index < 4; index++) {
+            childElements[index].innerText = ""
+        }
+    }
+
+    // writeToElem("drip_text",drip.text ? drip.text.join() : "");
     
 
     if(drip.roadId != "" && drip.roadOffset >= 0) {
