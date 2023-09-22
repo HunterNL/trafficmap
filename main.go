@@ -54,6 +54,18 @@ func (d *Drip) hasImage() bool {
 	return true
 }
 
+// If there's any interesting text
+// Interesting = if it has any line with more than 1 character
+func (d *Drip) hasText() bool {
+	for _, v := range d.TextLines {
+		if len(v) > 1 {
+			return true
+		}
+	}
+
+	return false
+}
+
 func update(sourceUrl string, c <-chan time.Time, serv *DripServ) {
 	for range c {
 		start := time.Now()

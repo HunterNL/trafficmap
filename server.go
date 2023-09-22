@@ -77,13 +77,14 @@ func handleImages(serv *DripServ) http.HandlerFunc {
 	})
 }
 
-func handleStatic(serv *DripServ) http.Handler {
+func createMux(serv *DripServ) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.html", handleFileRead("index.html", "text/html"))
 	mux.Handle("/index.js", handleFileRead("index.js", "text/javascript"))
 	mux.Handle("/leaflet.canvas-markers.js", handleFileRead("leaflet.canvas-markers.js", "text/javascript"))
 	mux.Handle("/style.css", handleFileRead("style.css", "text/css"))
+	mux.Handle("/favicon.ico", handleFileRead("favicon.ico", "image/png"))
 	mux.Handle("/images/", handleImages(serv))
 	mux.Handle("/data.json", handleDataRead(serv))
 
@@ -93,8 +94,8 @@ func handleStatic(serv *DripServ) http.Handler {
 func ServeData(addr string, port int, serv *DripServ) {
 	fullAddr := fmt.Sprintf("%v:%v", addr, port)
 
-	fmt.Printf("Serving data at %v\n", fullAddr)
-	err := http.ListenAndServe(fullAddr, LogHandler(handleStatic(serv)))
+	fmt.Printf("Serving site at http://%v\n", fullAddr)
+	err := http.ListenAndServe(fullAddr, LogHandler(createMux(serv)))
 
 	if err != nil {
 		log.Fatal(err)

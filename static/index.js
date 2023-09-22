@@ -112,6 +112,8 @@ const setIconSize = (markers, imageFactor) => {
         const origSize = iconOptions.iconSizeOrig
         const realSizes = iconOptions.iconSize
 
+        if(!origSize) return;
+
         realSizes[0] = origSize[0] * imageFactor
         realSizes[1] = origSize[1] * imageFactor
 
@@ -183,6 +185,22 @@ onReady(() => {
     document.getElementById("close-button")?.addEventListener("click", () => setSidebarVisibility(false))
 })
 
+function createIcon(drip) {
+    if(drip.imageWidth && drip.imageHeight) {
+        const imgX = parseInt(drip.imageWidth)
+        const imgY = parseInt(drip.imageHeight)
+
+        return L.icon({
+            iconUrl: imageForDripId(drip.id),
+            iconSize: [imgX, imgY],
+            iconSizeOrig: [imgX, imgY],
+            iconAnchor: [imgX / 2, imgY / 2],
+        })
+    } 
+    throw new Error("Drip doesn't have an image");
+
+}
+
 function setupMap() {
     const mapContainer = document.getElementById("map")
     if (!mapContainer) {
@@ -219,28 +237,24 @@ function setupMap() {
     getData().then(d => {
 
         d.drips.forEach(drip => {
+            dripDb.set(drip.id, drip)
+        })
+
+        d.drips.forEach(drip => {
             const lat = parseFloat(drip.lat, 10)
             const lon = parseFloat(drip.lon, 10)
-
-            const imgX = parseInt(drip.imageWidth)
-            const imgY = parseInt(drip.imageHeight)
 
             if (Number.isNaN(lat) || Number.isNaN(lon)) {
                 return
             }
 
-            const icon = L.icon({
-                iconUrl: imageForDripId(drip.id),
-                iconSize: [imgX, imgY],
-                iconSizeOrig: [imgX, imgY],
-                iconAnchor: [imgX / 2, imgY / 2],
-                // html: img
-            })
-
-            const marker = L.marker([lat, lon], { icon })
+            
+            if(drip.imageHeight == 0 || drip.imageWidth == 0 ) {
+                return
+            }
+            const marker = L.marker([lat, lon], { icon:createIcon(drip) })
+            
             marker.dripId = drip.id
-
-            dripDb.set(drip.id, drip)
 
             markers.push(marker)
         })

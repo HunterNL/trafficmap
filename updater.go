@@ -66,9 +66,10 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 		return err
 	}
 
+	// We only care about drips with an image or text, filter out the rest
 	drips := make([]Drip, 0, len(allDrips))
 	for _, d := range allDrips {
-		if d.hasImage() {
+		if d.hasImage() || d.hasText() {
 			drips = append(drips, d)
 		}
 	}
@@ -90,8 +91,9 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 	defer serv.Unlock()
 
 	serv.LastUpdate = time.Now()
-
 	serv.DripsSlice = drips
+	clear(serv.dripsMap)
+
 	for _, drip := range drips {
 		serv.dripsMap[drip.Id] = drip
 	}
