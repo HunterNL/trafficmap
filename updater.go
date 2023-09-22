@@ -92,7 +92,10 @@ func updateDrips(baseUrl string, serv *DripServ) error {
 
 	serv.LastUpdate = time.Now()
 	serv.DripsSlice = drips
-	clear(serv.dripsMap)
+
+	for k := range serv.dripsMap {
+		delete(serv.dripsMap, k)
+	}
 
 	for _, drip := range drips {
 		serv.dripsMap[drip.Id] = drip
