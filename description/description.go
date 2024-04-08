@@ -290,7 +290,7 @@ func Parse(description string) DescriptionDerivatives {
 			description = right
 
 			for prefix, fullName := range orgMap {
-				if (left[:3]) == prefix {
+				if len(left) >= 3 && (left[:3]) == prefix {
 					out.Organization = fullName
 				}
 			}
